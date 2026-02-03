@@ -1,1 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Uveitis Bloodwork Ordering Tool</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#121a23;
+      --card2:#0f1620;
+      --text:#eaf2ff;
+      --muted:#b8c6dd;
+      --line:#223145;
+      --accent:#13e9fe;
+      --warn:#ffcc66;
+      --danger:#ff6b6b;
+      --ok:#7CFF9B;
+    }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(900px 500px at 20% 0%, rgba(19,233,254,.18), transparent 60%),
+                  radial-gradient(700px 400px at 80% 20%, rgba(124,255,155,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    .wrap{ max-width: 1050px; margin: 26px auto; padding: 0 14px 60px; }
+    .header{
+      display:flex; flex-wrap:wrap; justify-content:space-between; gap:14px; align-items:flex-end;
+      margin-bottom: 14px;
+    }
+    h1{ margin:0; font-size: 26px; letter-spacing:.2px; }
+    .sub{ color:var(--muted); margin-top: 6px; font-size: 14px; line-height: 1.35; max-width: 760px; }
+    .pill{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; border:1px solid var(--line); border-radius: 999px;
+      background: rgba(18,26,35,.65);
+      color:var(--muted);
+      font-size: 12px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(18,26,35,.9), rgba(15,22,32,.9));
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size: 16px;
+      color: var(--text);
+      letter-spacing: .2px;
+    }
+    .rows{ display:grid; gap: 10px; }
+    .row{
+      display:grid;
+      grid-template-columns: 210px 1fr;
+      gap: 10px;
+      align-items:center;
+    }
+    @media (max-width: 520px){
+      .row{ grid-template-columns: 1fr; }
+    }
+    label{ color:var(--muted); font-size: 13px; }
+    select{
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(8,12,18,.6);
+      color: var(--text);
+      outline: none;
+    }
+    select:focus{ border-color: rgba(19,233,254,.65); box-shadow: 0 0 0 3px rgba(19,233,254,.15); }
+    .actions{
+      display:flex; flex-wrap:wrap; gap: 10px;
+      margin-top: 12px;
+    }
+    button{
+      cursor:pointer;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(19,233,254,.5);
+      background: rgba(19,233,254,.12);
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+    button.secondary{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-weight: 700;
+    }
+    button:hover{ filter: brightness(1.08); }
+    .note{
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .out h2{ margin-bottom: 8px; }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255,255,255,.03);
+      margin: 6px 8px 0 0;
+    }
+    .badge.ok{ border-color: rgba(124,255,155,.35); color: rgba(124,255,155,.95); background: rgba(124,255,155,.08); }
+    .badge.warn{ border-color: rgba(255,204,102,.35); color: rgba(255,204,102,.95); background: rgba(255,204,102,.08); }
+    .badge.danger{ border-color: rgba(255,107,107,.35); color: rgba(255,107,107,.95); background: rgba(255,107,107,.08); }
+    .section{
+      margin-top: 12px;
+      border-top: 1px dashed rgba(34,49,69,.8);
+      padding-top: 12px;
+    }
+    .group{
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,.15);
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .group h3{ margin:0 0 8px; font-size: 14px; letter-spacing: .2px; }
+    ul{ margin: 8px 0 0 18px; padding:0; }
+    li{ margin: 7px 0; color: var(--text); }
+    .why{ color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .smallprint{
+      color: rgba(184,198,221,.85);
+      font-size: 11.5px;
+      line-height: 1.35;
+      margin-top: 12px;
+    }
+    .divider{
+      height:1px; background: rgba(34,49,69,.7);
+      margin: 12px 0;
+    }
+    .footer{
+      margin-top: 14px;
+      color: rgba(184,198,221,.75);
+      font-size: 11.5px;
+      line-height: 1.35;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  </style>
+</head>
 
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>Uveitis Bloodwork Ordering Tool</h1>
+        <div class="sub">
+          Rule-based lab suggestions based on clinical presentation (laterality, course, granulomatous signs, synechiae,
+          IOP, hypopyon) and common high-yield pathways (sarcoid/TB, syphilis, HLA-B27, JIA, toxoplasmosis, intermediate uveitis → MRI).
+        </div>
+      </div>
+      <div class="pill">
+        <span>GitHub Pages ready</span>
+        <span class="mono">emzediker</span>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Clinical Inputs</h2>
+        <div class="rows">
+          <div class="row">
+            <label for="location">Location</label>
+            <select id="location">
+              <option value="unknown">Select…</option>
+              <option value="anterior">Anterior</option>
+              <option value="intermediate">Intermediate (pars planitis/vitreitis)</option>
+              <option value="posterior">Posterior</option>
+              <option value="panuveitis">Panuveitis</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="laterality">Laterality</label>
+            <select id="laterality">
+              <option value="unknown">Select…</option>
+              <option value="unilateral">Unilateral</option>
+              <option value="bilateral">Bilateral</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="course">Course</label>
+            <select id="course">
+              <option value="unknown">Select…</option>
+              <option value="acute_first">Acute (first/isolated episode)</option>
+              <option value="acute_recurrent">Recurrent</option>
+              <option value="chronic">Chronic</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="granulomatous">Granulomatous signs</label>
+            <select id="granulomatous">
+              <option value="unknown">Select…</option>
+              <option value="no">No</option>
+              <option value="yes">Yes (mutton-fat KP/iris nodules/granulomas)</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="synechiae">Synechiae</label>
+            <select id="synechiae">
+              <option value="unknown">Select…</option>
+              <option value="none">None</option>
+              <option value="posterior">Posterior synechiae</option>
+              <option value="anterior">Anterior synechiae / PAS</option>
+              <option value="both">Both</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="iop">IOP</label>
+            <select id="iop">
+              <option value="unknown">Select…</option>
+              <option value="low">Low</option>
+              <option value="normal">Normal</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="hypopyon">Hypopyon</label>
+            <select id="hypopyon">
+              <option value="unknown">Select…</option>
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="age">Age group</label>
+            <select id="age">
+              <option value="unknown">Select…</option>
+              <option value="adult">Adult</option>
+              <option value="child">Child / adolescent</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>Gating & High-yield Toggles</h2>
+        <div class="rows">
+          <div class="row">
+            <label for="trauma">Clear trauma or surgery trigger</label>
+            <select id="trauma">
+              <option value="unknown">Select…</option>
+              <option value="no">No</option>
+              <option value="yes">Yes (blunt trauma / clear post-op trigger)</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="knownDx">Known systemic diagnosis already linked to uveitis</label>
+            <select id="knownDx">
+              <option value="unknown">Select…</option>
+              <option value="no">No</option>
+              <option value="yes_typical">Yes, and this presentation is typical</option>
+              <option value="yes_atypical">Yes, but presentation is atypical</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="neuroretinitis">Neuroretinitis / macular star</label>
+            <select id="neuroretinitis">
+              <option value="unknown">Select…</option>
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="immunocomp">Immunocompromised</label>
+            <select id="immunocomp">
+              <option value="unknown">Select…</option>
+              <option value="no">No / unknown</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <label for="postop">Recent cataract surgery timing (if applicable)</label>
+            <select id="postop">
+              <option value="none">None / not applicable</option>
+              <option value="12_48">12–48 hours</option>
+              <option value="4_7">4–7 days</option>
+              <option value="other">Other / unsure</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="run">Generate Workup</button>
+          <button class="secondary" id="reset">Reset</button>
+        </div>
+        <div class="note">
+          This tool is designed to be *selective* (not “order everything”). It highlights classic “no lab needed” scenarios and
+          builds a targeted lab set when indicated.
+        </div>
+      </div>
+
+      <div class="card out">
+        <h2>Recommended Orders</h2>
+        <div id="badges"></div>
+        <div class="section" id="output">
+          <div class="smallprint">
+            Choose inputs on the left, then click <b>Generate Workup</b>.
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="divider"></div>
+          <div><b>Built for:</b> uveitis triage workup logic (educational / decision support)</div>
+          <div><b>Explicit exclusions:</b> IgE / allergy panels and “Zone” allergy tests are not recommended for uveitis workups.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+
+  function uniqPush(list, item){
+    if(!list.includes(item)) list.push(item);
+  }
+
+  function addTest(groupMap, groupName, testName, rationale){
+    if(!groupMap[groupName]) groupMap[groupName] = [];
+    groupMap[groupName].push({test: testName, why: rationale});
+  }
+
+  function badge(type, text){
+    return `<span class="badge ${type}">${text}</span>`;
+  }
+
+  function render(groups, notes, stopMessage){
+    const out = $("output");
+    const badges = $("badges");
+
+    let badgeHtml = "";
+    if(stopMessage){
+      badgeHtml += badge("ok", "No lab work indicated (classic exclusion)");
+    }else{
+      badgeHtml += badge("warn", "Targeted labs recommended");
+    }
+    notes.flags.forEach(f => badgeHtml += badge(f.type, f.text));
+    badges.innerHTML = badgeHtml;
+
+    if(stopMessage){
+      out.innerHTML = `
+        <div class="group">
+          <h3>Lab Work</h3>
+          <div class="smallprint">${stopMessage}</div>
+        </div>
+        ${notesHtml(notes)}
+      `;
+      return;
+    }
+
+    // Render groups
+    let html = "";
+    const order = [
+      "Must-not-miss infectious",
+      "Granulomatous workup",
+      "Autoimmune / inflammatory",
+      "Posterior lesion pathway",
+      "Neuroretinitis pathway",
+      "Imaging",
+      "General inflammation / systemic signal",
+      "Avoid / not indicated"
+    ];
+
+    order.forEach(name => {
+      if(groups[name] && groups[name].length){
+        html += `
+          <div class="group">
+            <h3>${name}</h3>
+            <ul>
+              ${groups[name].map(x => `
+                <li>
+                  <b>${escapeHtml(x.test)}</b>
+                  <div class="why">${escapeHtml(x.why)}</div>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+        `;
+      }
+    });
+
+    // Any remaining groups not in list
+    Object.keys(groups).forEach(name => {
+      if(order.includes(name)) return;
+      html += `
+        <div class="group">
+          <h3>${escapeHtml(name)}</h3>
+          <ul>
+            ${groups[name].map(x => `
+              <li>
+                <b>${escapeHtml(x.test)}</b>
+                <div class="why">${escapeHtml(x.why)}</div>
+              </li>
+            `).join("")}
+          </ul>
+        </div>
+      `;
+    });
+
+    out.innerHTML = html + notesHtml(notes);
+  }
+
+  function notesHtml(notes){
+    const bullets = notes.bullets.map(x => `<li>${escapeHtml(x)}</li>`).join("");
+    return `
+      <div class="group" style="margin-top:12px;">
+        <h3>Notes / Reminders</h3>
+        <ul>${bullets || "<li>No additional notes.</li>"}</ul>
+      </div>
+      <div class="smallprint" style="margin-top:10px;">
+        This tool summarizes common high-yield pathways. Clinical judgment and local protocols apply.
+      </div>
+    `;
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, (m) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  function getInputs(){
+    return {
+      location: $("location").value,
+      laterality: $("laterality").value,
+      course: $("course").value,
+      granulomatous: $("granulomatous").value,
+      synechiae: $("synechiae").value,
+      iop: $("iop").value,
+      hypopyon: $("hypopyon").value,
+      age: $("age").value,
+      trauma: $("trauma").value,
+      knownDx: $("knownDx").value,
+      neuroretinitis: $("neuroretinitis").value,
+      immunocomp: $("immunocomp").value,
+      postop: $("postop").value
+    };
+  }
+
+  function generate(){
+    const i = getInputs();
+    const groups = {};
+    const notes = { bullets: [], flags: [] };
+
+    // --------- EXPLICIT "AVOID" items from lecture ----------
+    addTest(groups, "Avoid / not indicated", "Total IgE / ImmunoCAP IgE", "Allergy testing; not a uveitis workup test.");
+    addTest(groups, "Avoid / not indicated", "Regional allergy panels (e.g., 'Zone' allergy tests)", "Allergy testing; not a uveitis workup test.");
+    addTest(groups, "Avoid / not indicated", "Histoplasmosis bloodwork", "Presumed ocular histoplasmosis is a clinical diagnosis; no standard bloodwork panel.");
+
+    // --------- GATING: no labs scenarios ----------
+    // 1) Trauma/surgery clearly explains
+    if(i.trauma === "yes"){
+      notes.flags.push({type:"ok", text:"Trauma/surgery trigger"});
+      return render(groups, notes,
+        "Clear traumatic or surgical trigger. Treat and monitor; labs are usually not needed unless presentation is atypical or severe."
+      );
+    }
+
+    // 2) Known systemic diagnosis that explains it, typical presentation
+    if(i.knownDx === "yes_typical"){
+      notes.flags.push({type:"ok", text:"Known systemic dx"});
+      return render(groups, notes,
+        "Known systemic diagnosis associated with uveitis and this presentation is typical. Additional labs are usually not needed unless new/atypical features appear."
+      );
+    }
+
+    // 3) Classic exclusion: adult + acute first + unilateral + anterior + nongranulomatous
+    const classicIdiopathic =
+      (i.age === "adult") &&
+      (i.course === "acute_first") &&
+      (i.laterality === "unilateral") &&
+      (i.location === "anterior") &&
+      (i.granulomatous === "no");
+
+    if(classicIdiopathic){
+      notes.flags.push({type:"ok", text:"Classic idiopathic pattern"});
+      notes.bullets.push("Adult + acute first episode + unilateral + anterior + non-granulomatous: often idiopathic.");
+      notes.bullets.push("If it recurs or becomes bilateral/posterior/granulomatous, broaden the workup.");
+      return render(groups, notes,
+        "Meets classic exclusion criteria (adult, acute isolated, unilateral anterior non-granulomatous). No routine lab work is typically required."
+      );
+    }
+
+    // If known dx but atypical, do labs as usual (continue)
+    if(i.knownDx === "yes_atypical"){
+      notes.flags.push({type:"warn", text:"Known dx but atypical"});
+      notes.bullets.push("Known systemic diagnosis present but uveitis pattern is atypical → consider additional causes (e.g., syphilis, sarcoid/TB, etc.).");
+    }
+
+    // --------- BASELINE labs when workup indicated ----------
+    // You can choose to always include CBC/ESR/CRP once you're "in workup mode"
+    addTest(groups, "General inflammation / systemic signal", "CBC", "Non-specific systemic signal; can support infectious/inflammatory process.");
+    addTest(groups, "General inflammation / systemic signal", "ESR", "Non-specific systemic inflammation marker.");
+    addTest(groups, "General inflammation / systemic signal", "CRP", "Non-specific systemic inflammation marker.");
+
+    // --------- HYPOPYON ----------
+    if(i.hypopyon === "yes"){
+      notes.flags.push({type:"danger", text:"Hypopyon"});
+      addTest(groups, "Must-not-miss infectious", "Syphilis: RPR (or VDRL)", "Hypopyon can be seen with severe syphilitic uveitis; do not miss.");
+      addTest(groups, "Must-not-miss infectious", "Syphilis: treponemal confirmatory test (FTA-ABS / treponemal Ab)", "Confirms syphilis if screening positive.");
+      notes.bullets.push("Hypopyon → strongly consider infectious causes; syphilis is a classic 'must test' in this setting.");
+    }
+
+    // --------- GRANULOMATOUS ----------
+    if(i.granulomatous === "yes"){
+      notes.flags.push({type:"warn", text:"Granulomatous"});
+      addTest(groups, "Granulomatous workup", "ACE", "Granulomatous uveitis can suggest sarcoidosis.");
+      addTest(groups, "Granulomatous workup", "Lysozyme", "Granulomatous uveitis can suggest sarcoidosis.");
+      addTest(groups, "Granulomatous workup", "Chest X-ray", "Look for hilar/other pulmonary findings (sarcoid vs TB patterns).");
+      addTest(groups, "Granulomatous workup", "Quantiferon Gold (TB test)", "TB is an infectious granulomatous condition; consider with granulomatous uveitis.");
+      notes.bullets.push("Granulomatous signs → prioritize sarcoid and TB pathways; consider VKH clinically if bilateral granulomatous panuveitis with serous RDs/skin changes.");
+    }
+
+    // --------- IOP considerations ----------
+    if(i.iop === "high" && (i.synechiae === "none" || i.synechiae === "unknown")){
+      notes.flags.push({type:"warn", text:"High IOP without synechiae"});
+      notes.bullets.push("High IOP + uveitis without synechiae suggests trabeculitis patterns (herpetic uveitis, Posner–Schlossman/CMV, Fuchs, UGH).");
+      if(i.immunocomp === "yes"){
+        addTest(groups, "Must-not-miss infectious", "HIV test", "CMV uveitis is more common in immunocompromised patients; consider HIV if status unknown.");
+        notes.bullets.push("Immunocompromised + possible CMV patterns → include HIV testing / coordinate systemic evaluation.");
+      }
+    }
+
+    if(i.iop === "low"){
+      notes.flags.push({type:"warn", text:"Low IOP"});
+      notes.bullets.push("Low IOP can occur from reduced aqueous production in ciliary body inflammation (supports inflammatory severity, not a single specific lab).");
+    }
+
+    // --------- ANTERIOR recurrent/chronic: HLA-B27 pathway ----------
+    const anteriorLike = (i.location === "anterior" || i.location === "unknown");
+    if(anteriorLike && (i.course === "acute_recurrent" || i.course === "chronic")){
+      addTest(groups, "Autoimmune / inflammatory", "HLA-B27", "Associated with recurrent anterior uveitis and spondyloarthropathies (UC/Crohn's/reactive arthritis/ankylosing spondylitis/psoriatic arthritis).");
+      notes.bullets.push("Recurrent/chronic anterior pattern → consider HLA-B27-associated conditions (ask GI, back pain, psoriasis history).");
+    }
+
+    // --------- Pediatrics: JIA pathway ----------
+    if(i.age === "child"){
+      notes.flags.push({type:"warn", text:"Pediatric"});
+      addTest(groups, "Autoimmune / inflammatory", "ANA", "Common association in juvenile idiopathic arthritis–related uveitis.");
+      notes.bullets.push("Pediatric uveitis may be minimally symptomatic; consider JIA even without strong complaints.");
+    }
+
+    // --------- Posterior / panuveitis: broaden + toxoplasmosis pathway ----------
+    const posteriorish = (i.location === "posterior" || i.location === "panuveitis");
+    if(posteriorish){
+      notes.flags.push({type:"warn", text:"Posterior involvement"});
+      // Many clinicians include syphilis as a baseline "must-not-miss" in posterior uveitis workups
+      addTest(groups, "Must-not-miss infectious", "Syphilis: RPR (or VDRL)", "Posterior/panuveitis patterns can be syphilitic; maintain low threshold.");
+      addTest(groups, "Must-not-miss infectious", "Syphilis: treponemal confirmatory test", "Confirms syphilis if screening positive.");
+      addTest(groups, "Posterior lesion pathway", "Toxoplasma IgG/IgM", "Posterior non-granulomatous chorioretinitis with recurrent lesions can be toxoplasmosis.");
+      addTest(groups, "Autoimmune / inflammatory", "ANA", "Posterior/choroidal involvement can occur with lupus-spectrum disease; consider if systemic features suggestive.");
+      notes.bullets.push("Posterior/panuveitis → broaden infectious + autoimmune consideration; toxoplasmosis is a classic posterior lesion cause.");
+    }
+
+    // --------- Neuroretinitis: Lyme/Bartonella pathway ----------
+    if(i.neuroretinitis === "yes"){
+      notes.flags.push({type:"danger", text:"Neuroretinitis"});
+      addTest(groups, "Neuroretinitis pathway", "Lyme titer (consider two-tier testing per local protocol)", "Neuroretinitis can be associated with Lyme disease.");
+      addTest(groups, "Neuroretinitis pathway", "Bartonella henselae (cat scratch) serology", "Neuroretinitis + macular star can be associated with cat scratch disease.");
+      notes.bullets.push("Neuroretinitis → check BP early (especially bilateral) before chasing less urgent labs.");
+    }
+
+    // --------- Intermediate uveitis: MRI for MS ----------
+    if(i.location === "intermediate"){
+      notes.flags.push({type:"warn", text:"Intermediate uveitis"});
+      addTest(groups, "Imaging", "MRI brain with contrast", "Intermediate uveitis (pars planitis) is associated with MS; MRI can evaluate for plaques.");
+      notes.bullets.push("Intermediate uveitis → ask about tingling in extremities, heat sensitivity, prior optic neuritis symptoms.");
+    }
+
+    // --------- Post-op timing: TASS vs endophthalmitis flags (not bloodwork, but critical routing) ----------
+    if(i.postop === "4_7"){
+      notes.flags.push({type:"danger", text:"Post-op 4–7 days"});
+      notes.bullets.push("Post-op day 4–7 with pain/redness/vision loss ± hypopyon → endophthalmitis concern → urgent emergency evaluation.");
+    } else if(i.postop === "12_48"){
+      notes.flags.push({type:"warn", text:"Post-op 12–48 hours"});
+      notes.bullets.push("Post-op 12–48 hours with hypopyon/corneal edema can suggest TASS → contact surgeon urgently; aggressive topical steroid often used per surgeon.");
+    }
+
+    // --------- If nothing else triggered, still keep it reasonable ----------
+    notes.bullets.push("This output is intentionally selective. Add/remove items based on local protocols, clinical exam, and systemic history.");
+
+    render(groups, notes, null);
+  }
+
+  function resetAll(){
+    const ids = ["location","laterality","course","granulomatous","synechiae","iop","hypopyon","age","trauma","knownDx","neuroretinitis","immunocomp","postop"];
+    ids.forEach(id => $(id).value = (id === "postop" ? "none" : "unknown"));
+    $("badges").innerHTML = "";
+    $("output").innerHTML = `<div class="smallprint">Choose inputs on the left, then click <b>Generate Workup</b>.</div>`;
+  }
+
+  $("run").addEventListener("click", generate);
+  $("reset").addEventListener("click", resetAll);
+
+  // Initialize
+  resetAll();
+})();
+</script>
+</body>
+</html>
