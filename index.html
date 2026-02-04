@@ -156,6 +156,41 @@
       line-height: 1.35;
     }
     .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    /* ===== READABILITY FIX FOR ANSWER / REVEAL BOXES ===== */
+
+[id$="Tests"],
+[id$="Dx"],
+[id$="Plan"],
+[id$="Explain"]{
+  background: rgba(0,0,0,.22) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--text) !important;
+}
+
+[id$="Tests"] *,
+[id$="Dx"] *,
+[id$="Plan"] *,
+[id$="Explain"] *{
+  color: var(--text) !important;
+}
+
+[id$="Tests"] em,
+[id$="Tests"] .why{
+  color: var(--muted) !important;
+}
+
+p[style*="color:#555"]{
+  color: var(--muted) !important;
+}
+
+textarea{
+  background: rgba(8,12,18,.65);
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+textarea::placeholder{
+  color: rgba(184,198,221,.75);
+}
   </style>
 </head>
 
