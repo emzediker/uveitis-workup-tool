@@ -2232,13 +2232,13 @@ OD:<br>
 - Hypopyon present<br>
 OS: Normal</p>
 
-<!-- IMAGE PLACEHOLDER -->
+<!-- IMAGE PLACEHOLDER: SLIT LAMP HYPOPYON -->
 <div style="margin-top:10px;">
   <img src="PASTE_BEHCETS_HYPOPYON_IMAGE_URL_HERE"
-       alt="Hypopyon associated with Behcet disease"
+       alt="Slit lamp photo showing hypopyon and severe anterior chamber inflammation (OD)"
        style="max-width:520px;width:100%;border:1px solid #ccc;border-radius:8px;">
   <p style="font-size:13px;color:#555;margin:6px 0 0;">
-    Slit lamp reference image – hypopyon uveitis
+    Slit lamp reference image – hypopyon uveitis (OD)
   </p>
 </div>
 
@@ -2246,6 +2246,16 @@ OS: Normal</p>
 OD:<br>
 - Retinal vasculitis with hemorrhages<br>
 OS: Normal</p>
+
+<!-- OPTIONAL IMAGE PLACEHOLDER: POSTERIOR SEGMENT / VASCULITIS -->
+<div style="margin-top:10px;">
+  <img src="PASTE_FUNDUS_VASCULITIS_IMAGE_URL_HERE"
+       alt="Fundus photo showing retinal vasculitis with hemorrhages (OD)"
+       style="max-width:520px;width:100%;border:1px solid #ccc;border-radius:8px;">
+  <p style="font-size:13px;color:#555;margin:6px 0 0;">
+    Optional reference image – retinal vasculitis / hemorrhages (OD)
+  </p>
+</div>
 
 <hr>
 
@@ -2266,32 +2276,65 @@ OS: Normal</p>
 
   <ul>
     <li><strong>ESR / CRP:</strong><br>
+      <em>Indication:</em> Evaluate systemic inflammatory activity in severe uveitis/vasculitis patterns.<br>
       <em>Result:</em> Elevated.</li>
 
     <li><strong>HLA-B51:</strong><br>
+      <em>Indication:</em> Supports Behçet disease in the correct clinical context (not diagnostic alone).<br>
       <em>Result:</em> Positive.</li>
 
-    <li><strong>Syphilis testing:</strong><br>
+    <li><strong>Syphilis testing (RPR + treponemal):</strong><br>
+      <em>Indication:</em> Rule out syphilis (common “great masquerader” cause of uveitis).<br>
       <em>Result:</em> Negative.</li>
+
+    <li><strong>CBC:</strong><br>
+      <em>Indication:</em> Baseline systemic status; evaluate leukocytosis/anemia; helpful before systemic therapy.<br>
+      <em>Result:</em> Within normal limits.</li>
   </ul>
+
+  <!-- IMAGE PLACEHOLDER: LABWORK PHOTO (UPLOAD YOUR MOCK LAB REPORT HERE) -->
+  <div style="margin-top:12px;">
+    <img src="PASTE_LABWORK_IMAGE_URL_HERE"
+         alt="Lab report image for ESR/CRP, HLA-B51, syphilis testing, CBC"
+         style="max-width:520px;width:100%;border:1px solid #ccc;border-radius:8px;">
+    <p style="font-size:13px;color:#555;margin:6px 0 0;">
+      Lab reference image – ancillary testing results
+    </p>
+  </div>
 </div>
 
 <hr>
 
 <h3>Diagnosis</h3>
 
+<p><em>Select the most likely diagnosis and affected eye:</em></p>
+
 <select style="width:100%; padding:8px; margin-bottom:10px;">
   <option value="">-- Select Diagnosis --</option>
 
-  <option>Behçet disease–associated uveitis</option>
-  <option>HLA-B27–associated anterior uveitis</option>
-  <option>Acute anterior uveitis with hypopyon</option>
-  <option>Endophthalmitis</option>
+  <!-- PRIMARY TARGET -->
+  <option>Behçet disease–associated uveitis / retinal vasculitis</option>
 
-  <option>HSV/VZV anterior uveitis</option>
-  <option>Sarcoidosis-associated uveitis</option>
+  <!-- UVEITIS WITH HYPOPYON / SEVERE ANTERIOR UVEITIS DIFFERENTIALS -->
+  <option>HLA-B27–associated acute anterior uveitis (severe)</option>
+  <option>Idiopathic severe acute anterior uveitis (hypopyon)</option>
+  <option>HSV anterior uveitis / trabeculitis</option>
+  <option>Herpes zoster ophthalmicus (VZV) uveitis</option>
+  <option>CMV anterior uveitis (especially if immunocompromised)</option>
+
+  <!-- INFECTIOUS "MUST-NOT-MISS" -->
   <option>Syphilis-associated uveitis</option>
-  <option>Masquerade syndrome</option>
+  <option>Tuberculosis-associated uveitis</option>
+  <option>Endophthalmitis (infectious post-op uveitis)</option>
+
+  <!-- AUTOIMMUNE / SYSTEMIC INFLAMMATORY -->
+  <option>Sarcoidosis-associated uveitis</option>
+  <option>Inflammatory bowel disease–associated uveitis</option>
+
+  <!-- MASQUERADERS / OTHER -->
+  <option>Masquerade syndrome (intraocular lymphoma/leukemia)</option>
+  <option>TASS (toxic anterior segment syndrome)</option>
+  <option>UGH syndrome (uveitis–glaucoma–hyphema)</option>
 </select>
 
 <p><strong>Affected Eye:</strong></p>
@@ -2309,12 +2352,14 @@ OS: Normal</p>
 </p>
 
 <div id="uveitis9Dx" style="display:none;margin-top:20px;border:1px solid #d1e7dd;background:#e9f6f1;padding:15px;border-radius:10px;">
-  <strong>Correct Diagnosis:</strong> Behçet disease–associated uveitis, OD
+  <strong>Correct Diagnosis:</strong> Behçet disease–associated uveitis with retinal vasculitis, OD
 </div>
 
 <hr>
 
 <h3>Plan</h3>
+
+<p><em>Enter management plan (must include therapeutic, dosage, follow-up, and referral if indicated).</em></p>
 
 <textarea rows="5" style="width:100%;" placeholder="Enter management plan..."></textarea>
 
@@ -2326,14 +2371,18 @@ OS: Normal</p>
 
 <div id="uveitis9Plan" style="display:none;margin-top:20px;border:1px solid #cce5ff;background:#f0f7ff;padding:15px;">
   <ul>
-    <li><strong>Urgent referral:</strong> Same-day referral to retina/uveitis specialist.</li>
-    <li><strong>Systemic therapy:</strong> High-dose systemic corticosteroids ± immunosuppressive therapy coordinated with rheumatology.</li>
-    <li><strong>Topical therapy:</strong> Aggressive topical steroid and cycloplegia.</li>
-    <li><strong>Follow-Up:</strong> Within 24–48 hours.</li>
+    <li><strong>Urgent referral:</strong> Same-day referral to retina/uveitis specialist (retinal vasculitis + hypopyon = vision-threatening).</li>
+    <li><strong>Topical steroid:</strong> Prednisolone acetate 1% OD q1–2h while awake (then taper per response/specialist).</li>
+    <li><strong>Cycloplegia:</strong> Cyclopentolate 1% OD BID–TID (pain control + prevent synechiae).</li>
+    <li><strong>Systemic therapy (specialist-directed):</strong> High-dose systemic corticosteroids ± steroid-sparing immunosuppression coordinated with rheumatology.</li>
+    <li><strong>Follow-Up:</strong> Within <strong>24–48 hours</strong> (or sooner if worsening).</li>
   </ul>
+
+  <div style="font-size:12px;color:#444;margin-top:8px;">
+    Warning signs: worsening pain, rapidly decreasing vision, new flashes/curtain, increasing floaters → urgent evaluation.
+  </div>
 </div>
 
-<hr>
 <hr>
 
 <hr><hr>
